@@ -1,4 +1,11 @@
 # PHPPushClient
+
+PHP is a programming language that is more widely used to build web applications. However, PHP can also be used to create backend applications that run a process behind the scenes. This process is run by a PHP engine and can be linked to a database.
+
+One application that requires a backend process is a payment application that is connected to a virtual account. The application can receive payment confirmation from banks or third parties without having to create a server. The application still acts as a client.
+
+PHP will make a connection to the virtual account server as a client. When a payment occurs, the server sends a payment confirmation and the client can update the payment status.
+
 This program must be run with a console and cannot be accessed with a browser. This program will run in the background continuously. If the connection is lost, the program will try to establish a new connection.
 
 # Usage
