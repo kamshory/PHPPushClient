@@ -11,6 +11,7 @@ This program must be run with a console and cannot be accessed with a browser. T
 # Usage
 
 ```php
+require "lib/process.php";
 require "lib/phppushclient.php";
 
 class AltoVAUsage
@@ -122,6 +123,9 @@ class AltoVAUsage
 	}
 }
 
+$indicator = new ProcessIndicator("localhost", 9000);
+$indicator->start();
 $api = new AltoVAUsage("localhost", 9001, true, "user", "code", "password");
 $api->init()->connect()->login()->start();
+
 ```
