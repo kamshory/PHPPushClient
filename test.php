@@ -1,3 +1,5 @@
+require "lib/process.php";
+require "lib/phppushclient.php";
 
 // usage
 class AltoVAUsage
@@ -107,3 +109,8 @@ class AltoVAUsage
 		return $this;
 	}
 }
+
+$indicator = new ProcessIndicator("localhost", 9000);
+$indicator->start();
+$api = new AltoVAUsage("localhost", 9001, true, "user", "code", "password");
+$api->init()->connect()->login()->start();
