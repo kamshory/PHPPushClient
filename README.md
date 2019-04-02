@@ -8,6 +8,8 @@ PHP will make a connection to the virtual account server as a client. When a pay
 
 This program must be run with a console and cannot be accessed with a browser. This program will run in the background continuously. If the connection is lost, the program will try to establish a new connection.
 
+Process indicator to indicate that the process is running. Task scheduller can check the port opened by this program. If process is running, it will send "OK".
+
 # Usage
 
 ```php
