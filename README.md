@@ -10,6 +10,13 @@ This program must be run with a console and cannot be accessed with a browser. T
 
 Process indicator to indicate that the process is running. Task scheduller can check the port opened by this program. If process is running, it will send "OK".
 
+# Requirement
+
+This library need Thread class. In case it not installed on your server, you can download it from
+https://windows.php.net/downloads/pecl/releases/pthreads/2.0.10/
+
+See https://secure.php.net/manual/en/pthreads.installation.php to install
+
 # Usage
 
 ```php
