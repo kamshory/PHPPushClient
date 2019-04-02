@@ -6,18 +6,22 @@ class SSLPushClient
 	public $clientID = "";
 	public $clientPassword = "";
 	public $clientCode = "";
-	public $ssl = false;
+	public $ssl = FALSE;
 	public $timeout = 10;
-	public $connected = false;
+	public $connected = FALSE;
+	
+	public $verifyPeer = FALSE;
+	public $verifyPeerName = FALSE;
 	
 	/**
-	Override this method
+	You need to override these methods
 	*/	
 	public $onMessageReceived = NULL;
 	public $onConnected = NULL;
 	public $onDisconnected = NULL;
+	
 
-	public function __construct($host, $port, $ssl = false)
+	public function __construct($host, $port, $ssl = FALSE)
 	{
 		$this->host = $host;
 		$this->port = $port;
@@ -30,8 +34,8 @@ class SSLPushClient
 			$context = stream_context_create(
 				array(
 				'ssl' => array(
-					'verify_peer' => false,
-					'verify_peer_name' => false
+					'verify_peer' => $this->verifyPeer,
+					'verify_peer_name' => $this->verifyPeerName
 				)
 			));
 	
@@ -42,7 +46,7 @@ class SSLPushClient
 			}
 			else
 			{
-				$this->connected = false;
+				$this->connected = FALSE;
 			}
 		}
 		else
@@ -55,7 +59,7 @@ class SSLPushClient
 			}
 			else
 			{
-				$this->connected = false;
+				$this->connected = FALSE;
 			}
 		}
 		if($this->connected)
@@ -65,32 +69,38 @@ class SSLPushClient
 	}
 	public function login($clientID, $clientCode, $clientPassword)
 	{
-		$raw = array(
+		$payload = array(
 			'command'=>'login',
 			'data'=>array(
 				'client_code'=>$this->clientCode,
 				'password'=>$this->clientPassword
 			)
 		);
-		$data = $this->_buildData(json_encode($raw));
+		$raw = json_encode($payload, JSON_PRETTY_PRINT);
+		$headers = array();
+		$headers[] = 'Content-type: application/json';
+		$data = $this->_buildData($raw, $headers);
 		$this->_sendData($data);
+		return $this;
 	}
 	private function _sendData($data)
 	{
 		if($this->_write($this->socket, $data, strlen($data)) === FALSE)
 		{
-			if($out === FALSE)
-			{
-				$this->_callDisconnected();
-			}
+			$this->_callDisconnected();
 		}
 	}
-	private function _buildData($raw)
+	private function _buildData($raw, $headers = array())
 	{
-		$headers = array(
-			'Content-type: application/json',
-			'Content-length: '.strlen($raw)
-		);
+		if(!isset($headers))
+		{
+			$headers = array();
+		}
+		if(!is_array($headers))
+		{
+			$headers = array();
+		}
+		$headers[] = 'Content-length: '.strlen($raw);
 		return implode("\r\n", $headers)."\r\n\r\n".$raw;
 	}
 	private function _getConetntLength($header)
@@ -99,7 +109,7 @@ class SSLPushClient
 		$length = 0;
 		foreach($lines as $key=>$line)
 		{
-			if(stripos($line, "Content-lenght:") !== false)
+			if(stripos($line, "Content-lenght:") !== FALSE)
 			{
 				$arr = explode(":", $line);
 				$str = trim($arr[1]);
@@ -142,7 +152,7 @@ class SSLPushClient
 		{
 			call_user_func($this->onDisconnected); 
 		}
-		$this->connected = false;
+		$this->connected = FALSE;
 	}
 	private function _callConnected()
 	{
@@ -156,7 +166,7 @@ class SSLPushClient
 		while($this->connected)
 		{
 			$header = "";
-			$out = false;
+			$out = FALSE;
 			do
 			{
 				$out = $this->_read($this->socket, 1);
@@ -166,7 +176,7 @@ class SSLPushClient
 				}
 				$header .= $out;
 			}
-			while(stripos($header, "\r\n\r\n") === false);
+			while(stripos($header, "\r\n\r\n") === FALSE);
 			if($out === FALSE)
 			{
 				$this->_callDisconnected();
