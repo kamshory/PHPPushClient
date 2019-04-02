@@ -39,6 +39,7 @@ class AltoVAUsage
 		// TODO Define you own function here...
 		$this->sslPushClient->onMessageReceived = function($header, $body)
 		{
+			// TODO Add your code here to receive the message
 			$jsonObject = json_decode($body, TRUE);
 			$type = trim($jsonObject['type']);
 			$data = $jsonObject['data'];
@@ -77,7 +78,7 @@ class AltoVAUsage
 
 			}
 			
-			// TODO Add your code here to receive the message
+			
 		};
 		$this->sslPushClient->onConnected = function()
 		{
